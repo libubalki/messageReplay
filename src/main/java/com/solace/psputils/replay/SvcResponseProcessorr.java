@@ -3,13 +3,14 @@ package com.solace.psputils.replay;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.Gson;
 import com.solacesystems.jcsmp.BytesXMLMessage;
 import com.solacesystems.jcsmp.JCSMPFactory;
 import com.solacesystems.jcsmp.Queue;
 import com.solacesystems.jcsmp.TextMessage;
 
-public class MessageProcessor {
-    private static final Logger logger = LoggerFactory.getLogger(MessageProcessor.class);
+public class SvcResponseProcessorr {
+    private static final Logger logger = LoggerFactory.getLogger(SvcResponseProcessorr.class);
     public static Object processMessage;
     private int msgCount = 0;
 
@@ -24,7 +25,11 @@ public class MessageProcessor {
             data = new String(payload);
         }
         logger.info("Received message: {}", data);
+        SvcResponseData svcRespData = new Gson().fromJson(data, SvcResponseData.class);
 
+        GetSFDCStatus getSFDCStatus = new GetSFDCStatus();
+        int respCode = getSFDCStatus.getSfdcStatus(data);
+        logger.info("Response Code from SFDC: {}", respCode);
         if (msgCount == 1) {
             Queue queue = JCSMPFactory.onlyInstance().createQueue("q.sfdc.store");
             QueueBrowser qBrow = new QueueBrowser();
@@ -34,4 +39,9 @@ public class MessageProcessor {
         logger.info("Message Acknowledged.");
     }
 
+    static class SvcResponseData {
+        String refId;
+        String resp;
+        String svcName;
+    }
 }

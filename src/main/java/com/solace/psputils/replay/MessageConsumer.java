@@ -12,7 +12,7 @@ public class MessageConsumer implements XMLMessageListener {
     private static final Logger logger = LoggerFactory.getLogger(MessageConsumer.class);
 
     boolean isShutdown = false;
-    MessageProcessor msgProc = new MessageProcessor();
+    SvcResponseProcessorr msgProc = new SvcResponseProcessorr();
 
     public void onReceive(BytesXMLMessage msg) {
         try {

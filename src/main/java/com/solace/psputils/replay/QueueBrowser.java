@@ -22,7 +22,7 @@ public class QueueBrowser {
     public void browseQueue(Queue queue, String transId) throws Exception {
         logger.info("Starting Queue Browser on {} with transaction id: {}", queue, transId);
 
-        client.setProperty(JCSMPProperties.HOST, "tcp://localhost:55554");
+        client.setProperty(JCSMPProperties.HOST, "tcp://localhost:55555");
         client.setProperty(JCSMPProperties.VPN_NAME, "lblocaldev");
         client.setProperty(JCSMPProperties.USERNAME, "lbdev");
         client.setProperty(JCSMPProperties.PASSWORD, "lbdev");
@@ -51,8 +51,8 @@ public class QueueBrowser {
                     msg.readAttachmentBytes(payload);
                     data = new String(payload);
                 }
-                logger.info("msg.getDestination:{}, msg.rmid:{}",
-                        msg.getDestination(), msg.getReplicationGroupMessageId());
+                logger.info("msg.getDestination:{}, msg.rmid:{}", msg.getDestination(),
+                        msg.getReplicationGroupMessageId());
                 logger.info("Message: {}", data);
                 EventData eventData = new Gson().fromJson(data, EventData.class);
                 String refId = eventData.payload.Reference_Id__c;

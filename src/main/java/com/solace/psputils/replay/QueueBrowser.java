@@ -19,7 +19,7 @@ public class QueueBrowser {
     private static final Logger logger = LoggerFactory.getLogger(QueueBrowser.class);
     private SolaceClient client = new SolaceClient();
 
-    public void browseQueue(Queue queue, String transId) throws Exception {
+    public void browseQueue(Queue queue, String transId, int respCode) throws Exception {
         logger.info("Starting Queue Browser on {} with transaction id: {}", queue, transId);
 
         client.setProperty(JCSMPProperties.HOST, "tcp://localhost:55555");
@@ -60,10 +60,15 @@ public class QueueBrowser {
                 if (refId.equals(transId)) {
                     logger.info("Transaction id found: {}", refId);
                     logger.info("Removing message from queue.");
-                    qBrowser.remove(msg);
+                    if (respCode == 300) {
+                        qBrowser.remove(msg);
+                    } else {
+                        logger.info("Publish to respose queue.")
+                        // Publish to replay queue
+                    }
                 }
-                logger.info("\n===================================================\n");
             }
+            logger.info("\n===================================================\n");
         } while (msg != null);
 
         logger.info("Finished Browsing.");
@@ -79,13 +84,13 @@ public class QueueBrowser {
         }
     }
 
-    static class EventData {
+    class EventData {
         String schema;
         Payload payload;
         Event event;
     }
 
-    static class Payload {
+    class Payload {
         public String Reference_Id__c;
         public String CreatedById;
         public String CreatedDate;

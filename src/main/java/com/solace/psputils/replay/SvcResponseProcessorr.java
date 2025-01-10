@@ -28,7 +28,7 @@ public class SvcResponseProcessorr {
         SvcResponseData svcRespData = new Gson().fromJson(data, SvcResponseData.class);
 
         GetSFDCStatus getSFDCStatus = new GetSFDCStatus();
-        String respCode = getSFDCStatus.getSfdcStatus(data);
+        int respCode = getSFDCStatus.getSfdcStatus(data);
         logger.info("Response Code from SFDC: {}", respCode);
         // if (msgCount == 1) {
         Queue queue = JCSMPFactory.onlyInstance().createQueue("q.sfdc.store");
